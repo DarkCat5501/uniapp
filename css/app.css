@@ -1,6 +1,43 @@
 .phone {
-  --bg: #fbeae4;
-  --nav-bg: #1d1d1d;
+  --color2: #065b59;
+  --color1: #28b5b5;
+  --color3: #41ab34;
+
+  --c11: #065b59;
+  --c12: #044e4c;
+  --c13: #034140;
+  --c14: #023534;
+  --c15: #012928;
+  --c16: #011e1d;
+  --c17: #001313;
+  --c18: #000909;
+  --c19: #000303;
+  --c20: #000000;
+
+  --c21: #28b5b5;
+  --c22: #4cbdbc;
+  --c23: #65c4c4;
+  --c24: #7ccccb;
+  --c25: #90d3d2;
+  --c26: #a4dada;
+  --c27: #b7e2e1;
+  --c28: #c9e9e8;
+  --c29: #dbf0f0;
+  --c30: #edf8f7;
+
+  --c31: #41ab34;
+  --c32: #58b44d;
+  --c33: #6dbd63;
+  --c34: #80c577;
+  --c35: #93ce8b;
+  --c36: #a5d69e;
+  --c37: #b7dfb2;
+  --c38: #c9e7c5;
+  --c39: #dbefd8;
+  --c40: #edf7ec;
+
+  --bg: var(--c29);
+  --nav-bg: var(--c16);
 }
 
 .phone {
@@ -9,7 +46,7 @@
   width: min(450px);
   aspect-ratio: min(1/2);
   height: 100%;
-  outline: 1px solid gray;
+  outline: 1px solid var(--c11);
   overflow: scroll;
   padding: 0;
   background: var(--bg);
@@ -71,7 +108,7 @@
 
 .map-placeholder {
   width: 300px;
-  background: salmon;
+  background: var(--color3);
   box-shadow: 0px 0px 15px -7px black;
   border-radius: 100%;
   aspect-ratio: 1/1;
