@@ -1,0 +1,7 @@
+.phone {
+  width: min(450px);
+  aspect-ratio: min(1/2);
+  height: 100%;
+  outline: 1px solid gray;
+  overflow: scroll;
+}

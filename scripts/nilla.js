@@ -121,6 +121,26 @@ export function stripScripts(nodes) {
   return scripts;
 }
 
+export function stripStyles(nodes) {
+  const styles = [];
+
+  for (const node of nodes.childNodes) {
+    const { nodeType } = node;
+    if (nodeType === 1 && node.tagName === "STYLE") {
+      nodes.removeChild(node);
+      styles.push(node);
+    } else if (
+      nodeType === 1 &&
+      node.tagName === "LINK" &&
+      node.getAttribute("rel") === "stylesheet"
+    ) {
+      nodes.removeChild(node);
+      styles.push(node);
+    }
+  }
+  return styles;
+}
+
 export function cloneAttributes(nodeA, nodeB) {
   for (const attr of nodeA.attributes) {
     nodeB.setAttribute(attr.name, attr.value);
@@ -133,5 +153,19 @@ export function loadScripts(scripts) {
     cloneAttributes(script, newScript);
     newScript.innerText = script.innerText;
     document.head.appendChild(newScript);
+  }
+}
+
+export function loadStyles(styles) {
+  for (const style of styles) {
+    if (style.tagName === "STYLE") {
+      //TODO: handle style locale
+      // const newStyle = document.createElement("style");
+      // cloneAttributes(style, newStyle);
+      // newStyle.innerText = style.innerText;
+      document.head.appendChild(style);
+    } else if (style.tagName === "LINK") {
+      document.head.appendChild(style);
+    }
   }
 }
