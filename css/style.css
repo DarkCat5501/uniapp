@@ -1,4 +1,26 @@
+:root {
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background: black;
   color: white;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow-x: hidden;
+}
+
+.all-center {
+  display: grid;
+  place-items: center;
+}
+
+.screen {
+  width: 100vw;
+  width: 100dvw;
+  height: 100vh;
+  height: 100dvh;
 }
