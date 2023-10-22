@@ -158,7 +158,6 @@ export async function replaceIncludes(root) {
     } = await include(inc.getAttribute("include"));
 
     if (els instanceof DocumentFragment) {
-      console.log(els);
       const incGroup = document.createElement("div");
       cloneAttributes(inc, incGroup);
       incGroup.insert(els);

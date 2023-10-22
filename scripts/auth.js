@@ -20,6 +20,10 @@ class Auth {
     localStorage.setItem("token", token);
   }
 
+  async logout() {
+    localStorage.removeItem("token");
+  }
+
   async login() {
     const userData = await ApiPost("signin", {
       email: "master@email.com",
