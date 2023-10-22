@@ -1,0 +1,35 @@
+<form class="login-form abs-center" onsubmit="window.login(event)">
+  <h2>Login</h2>
+  <div>
+    <div class="field">
+      <label for="email">email:</label>
+      <input id="email" type="email" name="email" />
+    </div>
+    <div class="field">
+      <label for="password">senha:</label>
+      <input id="password" type="password" name="password" />
+    </div>
+    <input type="submit" value="entrar" />
+  </div>
+</form>
+
+<script type="module">
+  import { authStore } from "./scripts/auth.js";
+  import { router } from "./scripts/router.js";
+
+  // if (authStore.isLoggedIn) {
+  //   router.goto("main");
+  // }
+
+  window.login = function login(e) {
+    e.preventDefault();
+    authStore.login().then(
+      () => {
+        console.log("logged in");
+      },
+      (error) => {
+        console.error("Error on login", error);
+      },
+    );
+  };
+</script>

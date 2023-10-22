@@ -1,22 +1,15 @@
-import {
-  include,
-  loadScripts,
-  loadStyles,
-  stripScripts,
-  stripStyles,
-  toElement,
-} from "./scripts/nilla.js";
+import { include, loadScripts, loadStyles } from "./scripts/nilla.js";
 import { router } from "./scripts/router.js";
+import { authStore } from "./scripts/auth.js";
 
-window.onload = async function() {
-  const pageData = await include(router.load());
-  const page = toElement(pageData);
+window.onload = async function () {
+  let currentRoute = router.load(
+    router.page === "login" && authStore.isLoggedIn ? "main" : undefined,
+  );
 
-  const scripts = stripScripts(page);
-  const styles = stripStyles(page);
-
+  //render page
+  const { elements, scripts, styles } = await include(currentRoute);
   loadScripts(scripts);
   loadStyles(styles);
-
-  app.insert(page);
+  app.insert(elements);
 };

@@ -37,7 +37,9 @@
   --c40: #edf7ec;
 
   --bg: var(--c29);
+  --fg: var(--c40);
   --nav-bg: var(--c16);
+  position: relative;
 }
 
 .phone {
@@ -45,7 +47,6 @@
   /* flex-direction: column; */
   width: min(450px);
   aspect-ratio: min(1/2);
-  height: 100%;
   outline: 1px solid var(--c11);
   overflow: scroll;
   padding: 0;
@@ -70,12 +71,17 @@
   z-index: 1;
 }
 
+.dbg {
+  outline: 1px solid red;
+}
+
 .main-container {
   display: grid;
   place-items: center;
-  position: sticky;
+  position: fixed;
   top: 50%;
-  transform: translateY(-50%);
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
   color: black;
   padding-bottom: 50px;
   height: fit-content;
@@ -93,17 +99,31 @@
   border-radius: 999px 999px 0px 0px;
   /* outline: 1px solid red; */
 }
+
+.error-page {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  /* background-color: #af2a0a; */
+  padding: 1rem;
+  top: 0;
+  width: 90%;
+  height: 100%;
+}
+
 .tab-bar {
   position: sticky;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  bottom: 0rem;
-  transform: translateY(calc(100% + 2rem));
+  transform: translateY(calc(200% - 3rem));
   height: fit-content;
+  bottom: 0;
   background: var(--nav-bg);
-  /* overflow-x: hiden; */
+  overflow-x: hiden;
 }
 
 .map-placeholder {
@@ -116,4 +136,68 @@
   flex-direction: column;
   justify-content: center;
   place-items: center;
+}
+
+.app-content {
+  width: 100%;
+  height: 100%;
+}
+
+.abs-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+/* login page */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color2);
+  padding: 1.4rem;
+  border-radius: 10px;
+  height: fit-content;
+  gap: 1rem;
+  font-size: 120%;
+  box-shadow: 0px 10px 30px -15px black;
+}
+.login-form > h2 {
+  margin: 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+input {
+  background-color: var(--c12);
+  color: var(--fg);
+  border: none;
+  border-bottom: 3px solid var(--fg);
+  padding: 0.2rem;
+  border-radius: 5px 5px 2px 2px;
+}
+
+input[type="submit"] {
+  border: none;
+  width: 100%;
+  margin-block: 1rem;
+  border-radius: 5px;
+  background-color: var(--c31);
+}
+
+.win-btn {
+  background-color: lightgray;
+  border: 8px solid;
+  border-style: groove;
+  border-radius: 0px;
+  padding-inline: 1rem;
+  font-weight: bolder;
+  text-transform: uppercase;
 }

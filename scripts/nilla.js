@@ -1,5 +1,12 @@
 export function toElements(data, root = "template") {
-  const template = document.createElement(root);
+  let template;
+  if (root instanceof HTMLElement) {
+    template = root;
+  } else if (typeof root === "string") {
+    template = document.createElement(root);
+  } else {
+    throw new Error("Unhandle root element");
+  }
   template.innerHTML = data;
   if (template instanceof HTMLTemplateElement) return template.content;
   return template;
@@ -38,19 +45,22 @@ export function uiInsert(parent, ...elements) {
   }
 }
 
+/**
+ * @param {HTMLElement} element
+ * */
 export function uiInsertBefore(element, ...elements) {
-  const parent = element.parent;
+  const parent = element.parentElement;
   for (const replacement of elements) {
-    if (element instanceof Node) parent.insertBefore(element, replacement);
-    else parent.appendChild(element, toElement(replacement));
+    if (element instanceof Node) parent.insertBefore(replacement, element);
+    else parent.insertBefore(toElement(replacement), element);
   }
 }
 
 export function uiInsertAfter(element, ...elements) {
-  const parent = element.parent;
+  const parent = element.parentElement;
   for (const replacement of elements) {
-    if (element instanceof Node) parent.insertAfter(element, replacement);
-    else parent.insertAfter(element, toElement(replacement));
+    if (element instanceof Node) parent.insertAfter(replacement, element);
+    else parent.insertAfter(toElement(replacement), element);
   }
 }
 
@@ -61,27 +71,43 @@ export function uiDelete(element) {
   }
 }
 
-HTMLElement.prototype.insert = function(...elements) {
+HTMLElement.prototype.insert = function (...elements) {
   uiInsert(this, ...elements);
 };
 
-HTMLElement.prototype.delete = function() {
-  uiDelete(this);
+HTMLElement.prototype.delete = function () {
+  if (this.parentElement) {
+    uiDelete(this);
+  } else {
+    throw new Error("Cannot delete children that has no parent");
+  }
 };
 
-HTMLElement.prototype.insertAfter = function(...elements) {
+HTMLElement.prototype.insertAfterMe = function (...elements) {
   uiInsertAfter(this, ...elements);
 };
 
-HTMLElement.prototype.insertBefore = function(...elements) {
+HTMLElement.prototype.insertBeforeMe = function (...elements) {
   uiInsertBefore(this, ...elements);
 };
 
-HTMLElement.prototype.refs = function() {
+HTMLElement.prototype.refs = function () {
   return elementRefs(this);
 };
 
-HTMLElement.prototype.replace = function(...replacements) {
+DocumentFragment.prototype.replace = function (child, ...replacements) {
+  if (replacements.length > 1) {
+    const group = document.createElement("div");
+    group.insert(...replacements);
+    this.replaceChild(group, child);
+  } else if (replacements.length === 1) {
+    this.replaceChild(replacements[0], child);
+  } else {
+    throw new Error("Trying to replace child with nothing");
+  }
+};
+
+HTMLElement.prototype.replace = function (...replacements) {
   const parent = this.parentElement;
   if (parent) {
     uiInsertBefore(this, ...replacements);
@@ -89,7 +115,7 @@ HTMLElement.prototype.replace = function(...replacements) {
   }
 };
 
-Number.prototype.toLengthOf = function(value) {
+Number.prototype.toLengthOf = function (value) {
   return String(this).padStart(String(value).length, "0");
 };
 
@@ -103,9 +129,59 @@ export function toList(...elements) {
   return list;
 }
 
-export async function include(file) {
+export async function require(file) {
   const res = await fetch(file);
   return res.text();
+}
+
+export async function include(file) {
+  //TODO: clean node childs that have no meaning
+  const data = await require(file);
+
+  const elements = toElements(data);
+  const includes = stripIncludes(elements);
+  const scripts = stripScripts(elements);
+  const styles = stripStyles(elements);
+
+  for (const inc of includes) {
+    const {
+      elements: els,
+      scripts: sc,
+      styles: sty,
+    } = await include(inc.getAttribute("src"));
+
+    console.log(elements);
+    if (elements instanceof DocumentFragment) {
+      if (els instanceof DocumentFragment) {
+        console.log(els);
+        const incGroup = document.createElement("div");
+        cloneAttributes(inc, incGroup);
+        incGroup.insert(els);
+        elements.replace(inc, incGroup);
+      } else {
+        elements.replace(inc, els);
+      }
+    } else {
+      inc.replace(els);
+    }
+
+    scripts.push(...sc);
+    styles.push(...sty);
+  }
+
+  return { elements, scripts, styles };
+}
+
+export function stripIncludes(nodes) {
+  const includes = [];
+  for (const node of nodes.childNodes) {
+    const { nodeType } = node;
+    if (nodeType === 1 && node.tagName === "INCLUDE") {
+      includes.push(node);
+    }
+  }
+
+  return includes;
 }
 
 export function stripScripts(nodes) {

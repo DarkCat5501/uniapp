@@ -22,8 +22,8 @@ export class Router {
     }
   }
 
-  load() {
-    const page = this.page;
+  load(route) {
+    const page = route ? route : this.page;
     if (!page) return this.loadFirstPage();
 
     if (page && page in this.routes) {
@@ -32,8 +32,17 @@ export class Router {
       return "./pages/404.html";
     }
   }
+
+  goto(page) {
+    if (page in this.routes) {
+      const pageParams = new URLSearchParams(location.search);
+      pageParams.set("page", page);
+      location.search = pageParams;
+    }
+  }
 }
 
 export const router = new Router({
+  login: "./pages/login.html",
   main: "./pages/main.html",
 });

@@ -1,2 +1,15 @@
-<h1>Error 404</h1>
-<p>looks like you're trying to get something that we don't have</p>
+<div class="error-page">
+  <h1>Error 404</h1>
+  <p>looks like you're trying to get something that we don't have</p>
+
+  <button class="win-btn" onclick="window.returnToApp()">return to app</button>
+</div>
+
+<script type="module">
+  import { router } from "./scripts/router.js";
+  phone.style.background = "#0303a0";
+
+  window.returnToApp = function () {
+    router.goto("login");
+  };
+</script>
