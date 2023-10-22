@@ -1,4 +1,9 @@
-import { include, loadScripts, loadStyles } from "./scripts/nilla.js";
+import {
+  include,
+  loadScripts,
+  loadStyles,
+  replaceIncludes,
+} from "./scripts/nilla.js";
 import { router } from "./scripts/router.js";
 import { authStore } from "./scripts/auth.js";
 
@@ -12,4 +17,6 @@ window.onload = async function () {
   loadScripts(scripts);
   loadStyles(styles);
   app.insert(elements);
+
+  await replaceIncludes(app);
 };

@@ -201,3 +201,9 @@ input[type="submit"] {
   font-weight: bolder;
   text-transform: uppercase;
 }
+
+/*navigation*/
+
+.float-menu {
+  position: absolute;
+}

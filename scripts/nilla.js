@@ -139,28 +139,30 @@ export async function include(file) {
   const data = await require(file);
 
   const elements = toElements(data);
-  const includes = stripIncludes(elements);
   const scripts = stripScripts(elements);
   const styles = stripStyles(elements);
+
+  return { elements, scripts, styles };
+}
+
+export async function replaceIncludes(root) {
+  const includes = stripIncludes(root);
+  const scripts = [];
+  const styles = [];
 
   for (const inc of includes) {
     const {
       elements: els,
       scripts: sc,
       styles: sty,
-    } = await include(inc.getAttribute("src"));
+    } = await include(inc.getAttribute("include"));
 
-    console.log(elements);
-    if (elements instanceof DocumentFragment) {
-      if (els instanceof DocumentFragment) {
-        console.log(els);
-        const incGroup = document.createElement("div");
-        cloneAttributes(inc, incGroup);
-        incGroup.insert(els);
-        elements.replace(inc, incGroup);
-      } else {
-        elements.replace(inc, els);
-      }
+    if (els instanceof DocumentFragment) {
+      console.log(els);
+      const incGroup = document.createElement("div");
+      cloneAttributes(inc, incGroup);
+      incGroup.insert(els);
+      inc.replace(incGroup);
     } else {
       inc.replace(els);
     }
@@ -169,14 +171,24 @@ export async function include(file) {
     styles.push(...sty);
   }
 
-  return { elements, scripts, styles };
+  for (const child of root.childNodes) {
+    await replaceIncludes(child);
+  }
+
+  return { scripts, styles };
 }
 
-export function stripIncludes(nodes) {
+export function stripIncludes(root) {
   const includes = [];
-  for (const node of nodes.childNodes) {
+  if (!("childNodes" in root)) throw new Error("Invalid root for strippin");
+
+  for (const node of root.childNodes) {
     const { nodeType } = node;
-    if (nodeType === 1 && node.tagName === "INCLUDE") {
+    if (
+      nodeType === 1 &&
+      node.tagName === "LINK" &&
+      node.getAttribute("include") !== null
+    ) {
       includes.push(node);
     }
   }
