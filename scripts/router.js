@@ -1,4 +1,4 @@
-import { include, loadScripts, loadStyles } from "./nilla.js";
+import { include, loadScripts, loadStyles, replaceIncludes } from "./nilla.js";
 
 export class Router {
   constructor(routes, onload, onrender, default_route) {
@@ -44,7 +44,6 @@ export class Router {
   }
 
   load(route) {
-    console.log("loaing ou", route);
     const nextRoute = this.routes.has(route) ? route : this.default_route;
 
     return this.routes.get(nextRoute);
@@ -63,23 +62,31 @@ export class Router {
       console.log("[redirecting]", redirect);
     }
 
-    await this._handle_render(next);
+    this.set_params({ p: next.name });
+    await this.handle_render(next);
   }
 
-  async _handle_render(pageData) {
+  async handle_render(pageData) {
     const app = document.getElementById("app");
     app.clear();
     await this.onrender(app, pageData);
   }
 
-  async goto(page, reload = false) {
+  set_params(params, reload = false) {
+    const pageParams = new URLSearchParams(location.search);
+    for (const [key, value] of Object.entries(params)) {
+      pageParams.set(key, value);
+    }
+
     if (reload) {
-      const pageParams = new URLSearchParams(location.search);
-      pageParams.set("p", page);
       location.search = pageParams;
     } else {
-      window.history.pushState({}, "", `?p=${page}`);
+      window.history.pushState({}, "", `?${pageParams}`);
     }
+  }
+
+  async goto(page, reload = false) {
+    this.set_params({ p: page }, reload);
     await this.handle(page);
   }
 }
@@ -93,10 +100,17 @@ export const router = new Router(
   ],
   (_prev, _page) => "404",
   async (app, { view }) => {
-    const { elements, scripts, styles } = await include(view);
-    app.insert(elements);
-    loadStyles(styles);
-    loadScripts(scripts);
+    {
+      const { elements, scripts, styles } = await include(view);
+      app.insert(elements);
+      loadStyles(styles);
+      loadScripts(scripts);
+    }
+    {
+      const { scripts, styles } = await replaceIncludes(app);
+      loadStyles(styles);
+      loadScripts(scripts);
+    }
   },
   "404",
 );

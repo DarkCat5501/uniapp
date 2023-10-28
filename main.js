@@ -1,10 +1,3 @@
-import {
-  include,
-  loadScripts,
-  loadStyles,
-  replaceIncludes,
-  toElement,
-} from "./scripts/nilla.js";
 import { router } from "./scripts/router.js";
 import { authStore } from "./scripts/auth.js";
 
@@ -14,32 +7,13 @@ router.routes = {
 };
 
 async function redirect(prev, next) {
+  const logged = authStore.isLoggedIn;
   if (next) {
-    console.log("validanting credentials");
-  } else {
-    console.log("sending to loading page");
+    if (next.name === "login" && logged) return "main";
+    return undefined;
   }
-  //
-  // let currentRoute = router.load();
-  // // if (router.page === "login" && authStore.isLoggedIn)
-  // //   return router.goto("main");
-  // // else if (router.page !== "login" && !authStore.isLoggedIn)
-  // //   return router.goto("login");
-  //
-  // //render page
-  // {
-  //   const { elements, scripts, styles } = await include(currentRoute);
-  //   loadScripts(scripts);
-  //   loadStyles(styles);
-  //   app.insert(elements);
-  // }
-  //
-  // //render includes in html
-  // {
-  //   const { scripts, styles } = await replaceIncludes(app);
-  //   loadScripts(scripts);
-  //   loadStyles(styles);
-  // }
+
+  return logged ? "main" : "login";
 }
 
 router.onload = redirect;
