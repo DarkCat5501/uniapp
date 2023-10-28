@@ -1,8 +1,13 @@
-<div class="float-menu">
-  <button>home</button>
-  <button>home</button>
-</div>
+<button class="round-btn" onclick="window.logout()">
+  <span class="icon material-icons-outlined">logout</span>
+</button>
 
 <script type="module">
-  console.log("loaded");
+  import { authStore } from "./scripts/auth.js";
+  import { router } from "./scripts/router.js";
+
+  window.logout = function () {
+    authStore.logout();
+    router.goto("login");
+  };
 </script>

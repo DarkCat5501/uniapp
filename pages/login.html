@@ -17,15 +17,11 @@
   import { authStore } from "./scripts/auth.js";
   import { router } from "./scripts/router.js";
 
-  // if (authStore.isLoggedIn) {
-  //   router.goto("main");
-  // }
-
-  window.login = function login(e) {
+  window.login = function (e) {
     e.preventDefault();
     authStore.login().then(
       () => {
-        console.log("logged in");
+        router.goto("main");
       },
       (error) => {
         console.error("Error on login", error);
