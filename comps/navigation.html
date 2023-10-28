@@ -1,10 +1,10 @@
-<button class="round-btn" onclick="window.logout()">
+<button class="round-btn" onclick="logout()">
   <span class="icon material-icons-outlined">logout</span>
 </button>
 
 <script type="module">
-  import { authStore } from "./scripts/auth.js";
-  import { router } from "./scripts/router.js";
+  import {authStore} from "./scripts/auth.js";
+  import {router} from "./scripts/router.js";
 
   window.logout = function () {
     authStore.logout();
