@@ -71,6 +71,14 @@ export function uiDelete(element) {
   }
 }
 
+export function uiClear(element) {
+  element.innerHTML = "";
+}
+
+HTMLElement.prototype.clear = function () {
+  uiClear(this);
+};
+
 HTMLElement.prototype.insert = function (...elements) {
   uiInsert(this, ...elements);
 };

@@ -41,3 +41,6 @@ class Auth {
 }
 
 export const authStore = new Auth();
+window.global = Object.assign(window.global ? window.global : {}, {
+  auth: authStore,
+});
